@@ -6,25 +6,27 @@ load_dotenv()
 
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
-def grade_email_against_style(final_email_text, style_text):
-    """
-    Uses GPT to evaluate how well the final email aligns with the style guide.
-    Returns a summary grade and feedback.
-    """
-    system_prompt = f"""You are a brand tone and voice expert. Based on the style guide below, score how well the final email adheres to the guide.
-Return a grade from A+ to F, and offer specific feedback for improvements.
+def grade_email_content(email_text, style_text, reviewer_feedback=None):
+    prompt = f"""
+You are an expert copywriter and branding strategist. Grade the following email for how well it follows the style guide.
 
 STYLE GUIDE:
 {style_text}
 
-FINAL EMAIL:
-{final_email_text}
+EMAIL:
+{email_text}
 """
+
+    if reviewer_feedback:
+        prompt += f"\n\nAdditional reviewer feedback to consider:\n{reviewer_feedback}"
+
+    prompt += "\n\nReturn a grade out of 10 and actionable feedback in a chart form showing which areas are strong and which could be improved"
 
     response = client.chat.completions.create(
         model="gpt-4",
         messages=[
-            {"role": "system", "content": system_prompt},
+            {"role": "system", "content": "You are a professional copywriter and branding expert."},
+            {"role": "user", "content": prompt}
         ]
     )
 

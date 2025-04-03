@@ -11,8 +11,13 @@ def generate_email_content(prompt, style_text):
 
 {style_text}
 
-Now generate an email based on this instruction: {prompt}
-Return both plain text copy and HTML structure."""
+Generate an email based on the prompt: "{prompt}"
+
+Return your output in this format:
+1. Plain text version of the email.
+2. HTML version of the email (use full HTML markup: <html>, <body>, etc.).
+Separate each version clearly.
+"""
 
     response = client.chat.completions.create(
         model="gpt-3.5-turbo",  # quick fallback if no GPT-4 access yet
